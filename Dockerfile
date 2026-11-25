@@ -14,4 +14,5 @@ RUN useradd --system --no-create-home appuser
 COPY --from=build /app/target/*.jar app.jar
 USER appuser
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Limita a memória da JVM ao tamanho do contêiner (o plano gratuito do Render tem 512 MB).
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-XX:+UseSerialGC", "-jar", "app.jar"]
