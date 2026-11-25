@@ -45,6 +45,10 @@ Requisito: JDK 25.
 - Console do H2 (para ver as mensagens de contato): http://localhost:8080/h2-console
   - JDBC URL: `jdbc:h2:mem:portfolio`, usuário `sa`, senha em branco
 
+### No navegador (GitHub Codespaces)
+
+Clique em **Code > Codespaces > Create codespace**. O ambiente já vem com Java 25 (configurado em `.devcontainer/devcontainer.json`). Quando o editor abrir, rode `./mvnw spring-boot:run` no terminal e o site abre sozinho na porta 8080.
+
 ### Produção com MySQL (Docker Compose)
 
 ```bash
