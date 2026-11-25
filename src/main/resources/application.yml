@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: portfoliopessoal
+  profiles:
+    # "dev" usa H2 em memória (não precisa instalar nada).
+    # "prod" usa MySQL. Troque com SPRING_PROFILES_ACTIVE=prod.
+    default: dev
+  jpa:
+    open-in-view: false
+    hibernate:
+      # O schema é criado pelo Flyway; o Hibernate só confere se as entidades batem com as tabelas.
+      ddl-auto: validate
+  flyway:
+    locations: classpath:db/migration
+
+server:
+  port: ${PORT:8080}
+  servlet:
+    session:
+      # Evita o ";jsessionid=..." na URL; a sessão fica só no cookie.
+      tracking-modes: cookie
+
+portfolio:
+  perfil:
+    nome: Vitor Rafael Costa Lopes
+    titulo: Técnico de Redes | Desenvolvedor Java em formação
+    resumo: >-
+      Atuo como técnico de redes, cuidando da configuração, do monitoramento e do suporte
+      de infraestrutura com equipamentos Cisco, H3C e Fortinet. Estou expandindo minha carreira
+      para o desenvolvimento backend com Java e Spring, unindo a base em redes e cloud
+      (AWS Certified Cloud Practitioner) à construção de aplicações.
+    email: ${PORTFOLIO_EMAIL:}
+    github: https://github.com/vitorknoown
+    linkedin: ${PORTFOLIO_LINKEDIN:}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:portfolio;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/portfolio}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  thymeleaf:
+    cache: true

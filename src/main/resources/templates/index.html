@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${perfil.nome} + ' | Portfólio'">Portfólio</title>
+    <meta name="description" th:content="${perfil.titulo}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="topo">
+    <nav class="container nav">
+        <a class="logo" href="#inicio">VL</a>
+        <ul>
+            <li><a href="#sobre">Sobre</a></li>
+            <li><a href="#habilidades">Habilidades</a></li>
+            <li><a href="#experiencia">Experiência</a></li>
+            <li><a href="#certificacoes">Certificações</a></li>
+            <li><a href="#projetos">Projetos</a></li>
+            <li><a href="#contato">Contato</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section id="inicio" class="hero">
+        <div class="container">
+            <p class="saudacao">Olá, eu sou</p>
+            <h1 th:text="${perfil.nome}">Nome</h1>
+            <p class="titulo" th:text="${perfil.titulo}">Título</p>
+            <div class="links">
+                <a class="botao" href="#contato">Entre em contato</a>
+                <a class="botao secundario" th:if="${!#strings.isEmpty(perfil.github)}"
+                   th:href="${perfil.github}" target="_blank" rel="noopener">GitHub</a>
+                <a class="botao secundario" th:if="${!#strings.isEmpty(perfil.linkedin)}"
+                   th:href="${perfil.linkedin}" target="_blank" rel="noopener">LinkedIn</a>
+                <a class="botao secundario" th:if="${!#strings.isEmpty(perfil.email)}"
+                   th:href="'mailto:' + ${perfil.email}">E-mail</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="sobre" class="secao">
+        <div class="container">
+            <h2>Sobre mim</h2>
+            <p class="resumo" th:text="${perfil.resumo}">Resumo</p>
+        </div>
+    </section>
+
+    <section id="habilidades" class="secao alternada">
+        <div class="container">
+            <h2>Habilidades</h2>
+            <div class="grade">
+                <div class="cartao" th:each="grupo : ${habilidades}">
+                    <h3 th:text="${grupo.key}">Categoria</h3>
+                    <ul class="tags">
+                        <li th:each="habilidade : ${grupo.value}" th:text="${habilidade.nome}">Habilidade</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experiencia" class="secao">
+        <div class="container">
+            <h2>Atuação em redes</h2>
+            <article class="cartao experiencia" th:each="exp : ${experiencias}">
+                <header>
+                    <h3 th:text="${exp.cargo}">Cargo</h3>
+                    <span class="selo" th:if="${exp.atual}">Atual</span>
+                </header>
+                <p class="subtitulo">
+                    <span th:text="${exp.area}">Área</span>
+                    <span th:if="${exp.empresa != null}" th:text="' · ' + ${exp.empresa}"></span>
+                </p>
+                <ul class="atividades">
+                    <li th:each="atividade : ${exp.atividades}" th:text="${atividade}">Atividade</li>
+                </ul>
+                <div th:if="${!exp.listaTecnologias.isEmpty()}">
+                    <p class="rotulo">Equipamentos</p>
+                    <ul class="tags">
+                        <li th:each="tec : ${exp.listaTecnologias}" th:text="${tec}">Tecnologia</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section id="certificacoes" class="secao alternada">
+        <div class="container">
+            <h2>Certificações</h2>
+            <div class="grade">
+                <div class="cartao certificacao" th:each="cert : ${certificacoes}">
+                    <h3 th:text="${cert.nome}">Certificação</h3>
+                    <p class="subtitulo" th:text="${cert.emissor}">Emissor</p>
+                    <a th:if="${cert.url != null}" th:href="${cert.url}" target="_blank" rel="noopener">Ver credencial</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projetos" class="secao">
+        <div class="container">
+            <h2>Projetos</h2>
+            <div class="grade">
+                <article class="cartao" th:each="projeto : ${projetos}">
+                    <h3 th:text="${projeto.nome}">Projeto</h3>
+                    <p th:text="${projeto.descricao}">Descrição</p>
+                    <ul class="tags">
+                        <li th:each="tec : ${projeto.listaTecnologias}" th:text="${tec}">Tecnologia</li>
+                    </ul>
+                    <a th:if="${projeto.url != null}" th:href="${projeto.url}" target="_blank" rel="noopener">Ver código</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="contato" class="secao alternada">
+        <div class="container estreito">
+            <h2>Contato</h2>
+            <p>Quer conversar sobre uma oportunidade ou projeto? Envie uma mensagem.</p>
+
+            <div class="alerta sucesso" th:if="${mensagemSucesso}" th:text="${mensagemSucesso}"></div>
+
+            <form th:action="@{/contato}" th:object="${contatoForm}" method="post" class="formulario" novalidate>
+                <label for="nome">Nome</label>
+                <input id="nome" type="text" th:field="*{nome}" maxlength="100" required>
+                <p class="erro" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></p>
+
+                <label for="email">E-mail</label>
+                <input id="email" type="email" th:field="*{email}" maxlength="150" required>
+                <p class="erro" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+
+                <label for="mensagem">Mensagem</label>
+                <textarea id="mensagem" rows="5" th:field="*{mensagem}" maxlength="2000" required></textarea>
+                <p class="erro" th:if="${#fields.hasErrors('mensagem')}" th:errors="*{mensagem}"></p>
+
+                <button type="submit" class="botao">Enviar mensagem</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer class="rodape">
+    <div class="container">
+        <p>© <span th:text="${#temporals.year(#temporals.createNow())}">2026</span>
+            <span th:text="${perfil.nome}">Nome</span>. Feito com Java e Spring Boot.</p>
+    </div>
+</footer>
+
+</body>
+</html>
