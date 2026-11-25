@@ -1,0 +1,11 @@
+package com.vitorlopes.portfolio.repository;
+
+import com.vitorlopes.portfolio.domain.Habilidade;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface HabilidadeRepository extends JpaRepository<Habilidade, Long> {
+
+    List<Habilidade> findAllByOrderByOrdemAsc();
+}
